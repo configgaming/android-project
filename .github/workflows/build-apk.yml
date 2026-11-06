@@ -31,12 +31,15 @@ jobs:
     - name: Buildozer ile APK Derle
       run: |
         echo y | buildozer init
+        
+        # Gerekli ayarları spec dosyasına kesin olarak işliyoruz
         sed -i 's/#requirements = python3/requirements = python3,requests,urllib3,idna,certifi,charset-normalizer/' buildozer.spec
         sed -i 's/#android.permissions =/android.permissions = INTERNET,READ_EXTERNAL_STORAGE,WRITE_EXTERNAL_STORAGE,RECEIVE_BOOT_COMPLETED/' buildozer.spec
         sed -i 's/#services =/services = tgservice:service.py/' buildozer.spec
         
-        # SDK lisanslarını otomatik kabul etmesi için android.accept-sdk-license ayarını ekliyoruz
-        sed -i 's/#android.accept_sdk_license = False/android.accept_sdk_license = True/' buildozer.spec
+        # Lisans otomatik onay satırındaki yorum işaretini kaldırıp True yapıyoruz
+        sed -i 's/#\(android.accept_sdk_license =\)/\1/' buildozer.spec
+        sed -i 's/android.accept_sdk_license = False/android.accept_sdk_license = True/' buildozer.spec
         
         ~/.local/bin/buildozer -v android debug
 
